@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#174b37">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mijn Stemmingsmonitor">
+<title>Incheck – Stemmingsmonitor</title>
+<style>
+:root{--ink:#174b37;--deep:#174b37;--purple:#32845b;--lav:#e8f5ec;--lav2:#d4eadb;--line:#b9d9c4;--paper:#fbfefb;--muted:#607568;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:#f2f8f3;color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
+header{background:linear-gradient(125deg,#123c2b,#236b49 68%,#62a77c);color:white;padding:26px 20px 25px;border-radius:0 0 28px 28px}
+.headrow{max-width:760px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:clamp(1.55rem,5vw,2.25rem);line-height:1.05;margin:0;font-weight:850;letter-spacing:-.04em}header p{margin:10px 0 0;color:#e0f3e5}
+.logo{font-size:1.8rem;border:1px solid #b9e0c6;border-radius:18px;width:54px;height:54px;display:grid;place-items:center;flex-shrink:0}
+nav{display:flex;gap:8px;max-width:760px;margin:18px auto 0}
+nav button{flex:1;border:1px solid #ffffff55;background:#ffffff18;color:white;border-radius:14px;padding:11px 8px;font-weight:700;font-size:.9rem}
+nav button.active{background:white;color:var(--ink)}
+main{max-width:760px;margin:18px auto;padding:0 14px 38px}
+.panel{background:white;border:1px solid #dcebe0;border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:0 5px 18px #163d2508}
+.section-title{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:850;margin:0 0 14px}
+.num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:white;background:var(--deep);flex-shrink:0}
+.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.mood{border:2px solid transparent;background:#f4faf5;border-radius:16px;padding:10px 3px 8px;text-align:center;color:var(--ink);min-width:0}
+.mood .face{width:46px;height:46px;margin:0 auto 5px;border-radius:50%;display:grid;place-items:center;font-size:1.7rem;color:#21123e}
+.mood small{font-size:.75rem;display:block;line-height:1.15}
+.mood.selected{border-color:var(--purple);background:#e8f5ec;box-shadow:0 0 0 2px #32845b20}
+.blue{background:#5dbcf4}.green{background:#8dd04f}.yellow{background:#ffc735}.orange{background:#ff7c39}.red{background:#f24b68}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid transparent;background:var(--lav);color:var(--ink);border-radius:999px;padding:10px 14px;font-size:.92rem}
+.chip.selected{background:var(--deep);color:white}
+label.field-label{font-weight:750;display:block;margin:12px 0 6px}
+input[type=text],textarea,input[type=date]{width:100%;border:1px solid var(--line);background:#fcfefc;border-radius:13px;padding:12px;font:inherit;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.subcard{background:#f7fbf8;border:1px solid #dcebe0;border-radius:16px;padding:13px}
+.subcard h3{font-size:1rem;margin:0 0 4px}.subcard p{font-size:.8rem;color:var(--muted);margin:0 0 9px}
+textarea.lines{min-height:94px;background:repeating-linear-gradient(to bottom,#fcfefc 0,#fcfefc 26px,#cfe4d5 27px,#fcfefc 28px)}
+.energyline{display:flex;align-items:center;gap:12px}.energyline input{width:100%;accent-color:var(--purple)}.energyvalue{font-size:1.15rem;font-weight:850;min-width:48px;text-align:right}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.primary,.secondary{border:0;border-radius:14px;padding:13px 18px;font:inherit;font-weight:800}.primary{background:var(--purple);color:white;flex:1}.secondary{background:var(--lav);color:var(--ink)}
+.hint{font-size:.82rem;color:var(--muted);margin:10px 0 0}
+.hidden{display:none!important}
+.entry{border:1px solid #dcebe0;border-radius:15px;padding:13px;margin:10px 0;background:#fff}
+.entrytop{display:flex;justify-content:space-between;gap:10px;align-items:start}.entry h3{margin:0;font-size:1rem}.entry p{margin:5px 0;color:var(--muted);font-size:.88rem}.tag{display:inline-block;background:var(--lav);border-radius:999px;padding:4px 9px;font-size:.78rem;margin:5px 4px 0 0}
+.empty{text-align:center;padding:24px 12px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:0 10px 24px}
+button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #7bb78e;outline-offset:2px}
+@media(min-width:600px){main{padding-left:20px;padding-right:20px}.panel{padding:22px}.mood .face{width:54px;height:54px;font-size:1.9rem}.mood small{font-size:.85rem}}
+@media(max-width:390px){.mood .face{width:38px;height:38px;font-size:1.45rem}.mood small{font-size:.68rem}.panel{padding:14px}.chip{padding:9px 11px;font-size:.85rem}.grid2,.check-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="headrow"><div><h1>Incheck- en<br>stemmingsmonitor</h1><p>Sta even stil bij jezelf: hoe gaat het nu met je?</p></div><div class="logo" aria-hidden="true">✿</div></div>
+  <nav><button class="active" id="tabNew" type="button">＋ Nieuwe incheck</button><button id="tabHistory" type="button">◷ Geschiedenis</button></nav>
+</header>
+<main>
+<section id="newView">
+  <div class="panel">
+    <h2 class="section-title"><span class="num">1</span> Hoe voel je je?</h2>
+    <div class="moods" id="moods">
+      <button class="mood" data-mood="Fantastisch!" type="button"><span class="face blue">⌣</span><small>Fantastisch!</small></button>
+      <button class="mood" data-mood="Goed" type="button"><span class="face green">☺</span><small>Goed</small></button>
+      <button class="mood" data-mood="Prima" type="button"><span class="face yellow">😐</span><small>Prima</small></button>
+      <button class="mood" data-mood="Slecht" type="button"><span class="face orange">☹</span><small>Slecht</small></button>
+      <button class="mood" data-mood="Verschrikkelijk" type="button"><span class="face red">☹</span><small>Verschrikkelijk</small></button>
+    </div>
+  </div>
+  <div class="panel">
+    <h2 class="section-title"><span class="num">2</span> Welke emoties beschrijven je gevoel?</h2>
+    <div class="chips" data-group="emotions">
+      <button class="chip" type="button">Rustig</button><button class="chip" type="button">Tevreden</button><button class="chip" type="button">Ontspannen</button><button class="chip" type="button">Onverschillig</button><button class="chip" type="button">Opgelucht</button><button class="chip" type="button">Vredig</button><button class="chip" type="button">Blij</button><button class="chip" type="button">Bang</button><button class="chip" type="button">Bedroefd</button><button class="chip" type="button">Boos</button><button class="chip" type="button">Schaamte</button><button class="chip" type="button">Gefrustreerd</button><button class="chip" type="button">Hoopvol</button><button class="chip" type="button">Onrustig</button>
+    </div>
+  </div>
+  <div class="panel">
+    <h2 class="section-title"><span class="num">3</span> Hoe komt het dat je je zo voelt?</h2>
+    <div class="chips" data-group="causes">
+      <button class="chip" type="button">Gezondheid</button><button class="chip" type="button">Slaap</button><button class="chip" type="button">Training</button><button class="chip" type="button">Eten</button><button class="chip" type="button">Hobby</button><button class="chip" type="button">Geld</button><button class="chip" type="button">Identiteit</button><button class="chip" type="button">Partner</button><button class="chip" type="button">Vrienden</button><button class="chip" type="button">Huisdier</button><button class="chip" type="button">Familie</button><button class="chip" type="button">Collega's</button><button class="chip" type="button">Daten</button><button class="chip" type="button">Werk</button><button class="chip" type="button">Thuis</button><button class="chip" type="button">School</button><button class="chip" type="button">Buiten</button><button class="chip" type="button">Reizen</button><button class="chip" type="button">Weer</button>
+    </div>
+    <label class="field-label" for="causeOther">Anders, namelijk</label><input id="causeOther" type="text" placeholder="Wat speelt er nog meer?">
+  </div>
+  <div class="panel">
+    <h2 class="section-title"><span class="num">4</span> Check ook even bij jezelf</h2>
+    <div class="check-grid">
+      <div class="subcard"><h3>☁ Gedachten</h3><p>Wat gaat er door je hoofd?</p><textarea id="thoughts" placeholder="Mijn gedachten zijn..."></textarea></div>
+      <div class="subcard"><h3>♡ Gevoelens</h3><p>Wat voel je vanbinnen?</p><textarea id="feelings" placeholder="Vanbinnen voel ik..."></textarea></div>
+      <div class="subcard"><h3>♙ Lichaam</h3><p>Wat merk je in je lichaam?</p><textarea id="body" placeholder="Ik merk bijvoorbeeld..."></textarea></div>
+      <div class="subcard"><h3>▯ Energie</h3><p>Hoeveel energie heb je?</p><div class="energyline"><input id="energy" type="range" min="0" max="100" step="5" value="50"><span class="energyvalue" id="energyValue">50%</span></div><p>0% = leeg · 100% = vol</p></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2 class="section-title"><span class="num">5</span> Wat doe je hierna?</h2>
+    <label class="field-label" for="action">Mijn eerstvolgende actie</label><textarea class="lines" id="action" placeholder="Wat zou je nu helpen? Wat is een kleine volgende stap?"></textarea>
+  </div>
+  <div class="panel">
+    <h2 class="section-title"><span class="num">6</span> Wil je nog iets toevoegen?</h2>
+    <textarea class="lines" id="notes" placeholder="Een notitie om dit gevoel of moment te herinneren..."></textarea>
+  </div>
+  <div class="panel">
+    <div class="grid2"><div><label class="field-label" for="date">Datum</label><input id="date" type="date"></div><div><label class="field-label" for="time">Tijd</label><input id="time" type="text" readonly></div></div>
+    <p class="hint">Je invullingen worden op dit apparaat in deze browser bewaard. Ze worden niet automatisch online gedeeld. Na online plaatsing kun je de app op je startscherm installeren.</p>
+    <div class="actions" style="margin-top:14px"><button class="primary" id="saveBtn" type="button">Incheck opslaan</button><button class="secondary" id="resetBtn" type="button">Wissen</button></div>
+  </div>
+</section>
+<section id="historyView" class="hidden">
+  <div class="panel">
+    <h2 class="section-title">◷ Jouw geschiedenis</h2>
+    <p class="hint">Bekijk eerdere momenten en ontdek patronen in je stemming en energie.</p>
+    <div class="grid2" style="margin-top:12px"><div><label class="field-label" for="filterMood">Filter op stemming</label><select id="filterMood" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink)"><option value="">Alle stemmingen</option><option>Fantastisch!</option><option>Goed</option><option>Prima</option><option>Slecht</option><option>Verschrikkelijk</option></select></div><div><label class="field-label" for="sortOrder">Volgorde</label><select id="sortOrder" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink)"><option value="new">Nieuwste eerst</option><option value="old">Oudste eerst</option></select></div></div>
+    <div id="historyStats"></div>
+    <div class="subcard" style="margin:14px 0">
+      <h3>Stemming over tijd</h3><p>De laatste 14 opgeslagen check-ins</p>
+      <div id="moodChart" aria-label="Grafiek van stemming door de tijd"></div>
+    </div>
+    <div class="subcard" style="margin:14px 0">
+      <h3>Energie over tijd</h3><p>De laatste 14 opgeslagen check-ins</p>
+      <div id="energyChart" aria-label="Grafiek van energie door de tijd"></div>
+    </div>
+    <div id="entries"></div>
+    <div class="actions"><button class="secondary" id="exportBtn" type="button">Exporteer gegevens (CSV)</button><button class="secondary" id="deleteAllBtn" type="button">Wis geschiedenis</button></div>
+  </div>
+</section>
+<footer>Een stemming is een algemene geestesgesteldheid die langer duurt. Een emotie is een kortdurende reactie op een gebeurtenis of ingrijpende ervaring.<br><br>Jouw gegevens blijven lokaal in deze browser.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let selectedMood='';
+const storageKey='incheck-stemmingsmonitor-v1';
+const now=new Date();
+$('date').value=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+$('time').value=now.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+$('moods').addEventListener('click',e=>{const b=e.target.closest('[data-mood]');if(!b)return;selectedMood=b.dataset.mood;document.querySelectorAll('.mood').forEach(x=>x.classList.toggle('selected',x===b));});
+document.querySelectorAll('.chips').forEach(group=>group.addEventListener('click',e=>{const b=e.target.closest('.chip');if(b)b.classList.toggle('selected')}));
+$('energy').addEventListener('input',()=> $('energyValue').textContent=$('energy').value+'%');
+function getSelected(group){return [...document.querySelectorAll(`[data-group="${group}"] .chip.selected`)].map(b=>b.textContent)}
+function load(){try{return JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{return []}}
+function persist(data){localStorage.setItem(storageKey,JSON.stringify(data))}
+function clearForm(){selectedMood='';document.querySelectorAll('.mood,.chip').forEach(b=>b.classList.remove('selected'));['causeOther','thoughts','feelings','body','action','notes'].forEach(id=>$(id).value='');$('energy').value=50;$('energyValue').textContent='50%';document.querySelectorAll('.mood').forEach(b=>b.classList.remove('selected'));const d=new Date();$('date').value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');$('time').value=d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});}
+$('saveBtn').addEventListener('click',()=>{if(!selectedMood){alert('Kies eerst hoe je je voelt.');return}const d={id:Date.now(),date:$('date').value,time:$('time').value,mood:selectedMood,emotions:getSelected('emotions'),causes:[...getSelected('causes'),$('causeOther').value.trim()].filter(Boolean),thoughts:$('thoughts').value.trim(),feelings:$('feelings').value.trim(),body:$('body').value.trim(),energy:Number($('energy').value),action:$('action').value.trim(),notes:$('notes').value.trim()};const all=load();all.push(d);persist(all);alert('Je incheck is opgeslagen op dit apparaat.');clearForm();renderHistory();show('history');});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Wil je de huidige invulling wissen?'))clearForm()});
+function show(which){const hist=which==='history';$('newView').classList.toggle('hidden',hist);$('historyView').classList.toggle('hidden',!hist);$('tabNew').classList.toggle('active',!hist);$('tabHistory').classList.toggle('active',hist);if(hist)renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
+$('tabNew').onclick=()=>show('new');$('tabHistory').onclick=()=>show('history');
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderHistory(){let all=load();const fm=$('filterMood').value;all=all.filter(x=>!fm||x.mood===fm).sort((a,b)=>$('sortOrder').value==='new'?b.id-a.id:a.id-b.id);const total=load();$('historyStats').innerHTML=`<div class="chips" style="margin:14px 0"><span class="tag">${total.length} check-in${total.length===1?'':'s'}</span>${total.length?`<span class="tag">Gemiddelde energie: ${Math.round(total.reduce((s,x)=>s+x.energy,0)/total.length)}%</span>`:''}</div>`;drawCharts(total);
+if(!all.length){$('entries').innerHTML='<div class="empty">Nog geen check-ins opgeslagen.<br>Vul je eerste moment in om hier geschiedenis op te bouwen.</div>';return}
+$('entries').innerHTML=all.map(x=>`<article class="entry"><div class="entrytop"><div><h3>${esc(x.mood)}</h3><p>${esc(x.date)} · ${esc(x.time)} · Energie ${x.energy}%</p></div><button class="secondary" data-delete="${x.id}" type="button" aria-label="Verwijder deze check-in">Verwijder</button></div>${x.emotions.length?`<div>${x.emotions.map(v=>`<span class="tag">${esc(v)}</span>`).join('')}</div>`:''}${x.causes.length?`<p><b>Oorzaken:</b> ${x.causes.map(esc).join(', ')}</p>`:''}${x.thoughts?`<p><b>Gedachten:</b> ${esc(x.thoughts)}</p>`:''}${x.feelings?`<p><b>Gevoelens:</b> ${esc(x.feelings)}</p>`:''}${x.body?`<p><b>Lichaam:</b> ${esc(x.body)}</p>`:''}${x.action?`<p><b>Actie:</b> ${esc(x.action)}</p>`:''}${x.notes?`<p><b>Notitie:</b> ${esc(x.notes)}</p>`:''}</article>`).join('');
+}
+$('entries').addEventListener('click',e=>{const b=e.target.closest('[data-delete]');if(!b)return;if(confirm('Deze check-in verwijderen?')){persist(load().filter(x=>String(x.id)!==b.dataset.delete));renderHistory()}});
+$('filterMood').onchange=renderHistory;$('sortOrder').onchange=renderHistory;
+$('deleteAllBtn').onclick=()=>{if(confirm('Weet je zeker dat je alle opgeslagen check-ins op dit apparaat wilt wissen?')){persist([]);renderHistory()}};
+$('exportBtn').onclick=()=>{const rows=load();if(!rows.length){alert('Er zijn nog geen check-ins om te exporteren.');return}const cols=['date','time','mood','emotions','causes','thoughts','feelings','body','energy','action','notes'];const cell=v=>'"'+String(Array.isArray(v)?v.join('; '):v??'').replace(/"/g,'""')+'"';const csv=[cols.join(';'),...rows.map(r=>cols.map(k=>cell(r[k])).join(';'))].join('\r\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mijn-stemmingsmonitor.csv';a.click();URL.revokeObjectURL(a.href)};
+
+function drawCharts(items){
+  const recent=items.slice().sort((a,b)=>a.id-b.id).slice(-14);
+  const moodScore={'Verschrikkelijk':1,'Slecht':2,'Prima':3,'Goed':4,'Fantastisch!':5};
+  function chart(target, values, min, max, color, suffix=''){
+    const el=$(target);
+    if(!values.length){el.innerHTML='<p class="hint">Nog niet genoeg gegevens. Sla een paar check-ins op om je trend te zien.</p>';return}
+    const w=320,h=128,pad=22,innerW=w-pad*2,innerH=h-pad*2;
+    const pts=values.map((v,i)=>({x:pad+(values.length===1?innerW/2:i*innerW/(values.length-1)),y:pad+innerH-(v-min)/(max-min)*innerH,v}));
+    const path=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+    const grid=[0,.5,1].map(t=>`<line x1="${pad}" y1="${pad+t*innerH}" x2="${w-pad}" y2="${pad+t*innerH}" stroke="#dcebe0" stroke-dasharray="3 4"/>`).join('');
+    const dots=pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="${color}"><title>${p.v}${suffix}</title></circle>`).join('');
+    const labels=pts.map((p,i)=>i===0||i===pts.length-1||i===Math.floor(pts.length/2)?`<text x="${p.x}" y="${h-4}" text-anchor="middle" font-size="9" fill="#607568">${esc((recent[i]||{}).date||'')}</text>`:'').join('');
+    el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" style="width:100%;height:auto;display:block">${grid}<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${dots}${labels}</svg>`;
+  }
+  chart('moodChart',recent.map(x=>moodScore[x.mood]||3),1,5,'#32845b');
+  chart('energyChart',recent.map(x=>x.energy),0,100,'#72a84d','%');
+}
+
+renderHistory();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>

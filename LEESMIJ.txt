@@ -1,0 +1,22 @@
+MIJN STEMMINGSMONITOR — PWA-pakket
+
+Inhoud:
+- index.html: de app
+- manifest.webmanifest: naam, kleuren en installatiesettings
+- sw.js: cache/offline ondersteuning
+- icon.svg: groen app-pictogram
+
+BELANGRIJK
+Dit is een installeerbare webapp (PWA), geen app-storepakket. Om installatie op Android/iPhone mogelijk te maken, moet de map online staan op een HTTPS-webadres. Openen als lokaal HTML-bestand werkt voor de invulfuncties, maar browserinstallatie en offline caching vereisen hosting.
+
+Delen / publiceren
+1. Upload alle bestanden uit deze map naar een HTTPS-hostingdienst die statische websites ondersteunt.
+2. Open de gepubliceerde HTTPS-link op je telefoon.
+3. Android/Chrome: kies het browsermenu en daarna 'Installeren' of 'Toevoegen aan startscherm'.
+4. iPhone/Safari: tik op Delen en kies 'Zet op beginscherm'.
+
+Privacy
+De check-ins worden lokaal in de browser opgeslagen (localStorage). Ze worden niet automatisch naar een server gestuurd en synchroniseren niet tussen apparaten. Iedereen die toegang heeft tot dezelfde browserprofiel kan mogelijk de opgeslagen gegevens zien. Gebruik deze eerste versie niet voor gegevens die je niet op dat apparaat wilt bewaren. Er is nog geen account, cloudback-up of beveiligde synchronisatie.
+
+Geschiedenis
+De app bevat grafieken voor stemming en energie over de laatste 14 opgeslagen check-ins, een geschiedenisoverzicht en CSV-export.

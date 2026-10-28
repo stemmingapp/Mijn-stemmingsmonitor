@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "Mijn Stemmingsmonitor",
+  "short_name": "Stemming",
+  "description": "Persoonlijke incheck, stemmingen, emoties en energie bijhouden.",
+  "lang": "nl-NL",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2f8f3",
+  "theme_color": "#174b37",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
